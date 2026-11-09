@@ -1,0 +1,59 @@
+plugins {
+    id 'com.google.protobuf' version '0.10.1' apply false
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'com.google.protobuf'
+
+    group = 'by.alromos'
+    version = '0.0.1-SNAPSHOT'
+
+    ext {
+        grpcVersion = '1.85.1'
+        protobufVersion = '4.36.2'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+    }
+
+    dependencies {
+        implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+        implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+        implementation "io.grpc:grpc-stub:${grpcVersion}"
+        implementation "com.google.protobuf:protobuf-java:${protobufVersion}"    }
+
+    sourceSets {
+        main {
+            proto {
+                srcDir "${rootDir}/proto"
+            }
+        }
+    }
+
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:${protobufVersion}"
+        }
+        plugins {
+            grpc {
+                artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+            }
+        }
+        generateProtoTasks {
+            all().each { task ->
+                task.plugins {
+                    grpc {}
+                }
+            }
+        }
+    }
+}
