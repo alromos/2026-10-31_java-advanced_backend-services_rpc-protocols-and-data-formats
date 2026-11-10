@@ -36,3 +36,8 @@ out/
 !gradle/wrapper/gradle-wrapper.jar
 .gradle/
 build/
+
+# Python
+__pycache__/
+.venv/
+python-client/generated/

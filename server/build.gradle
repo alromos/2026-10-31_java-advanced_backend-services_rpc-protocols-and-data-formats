@@ -1,0 +1,3 @@
+application {
+    mainClass = 'by.alromos.java.advanced.grpc.pingpong.server.PingServer'
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pingpong;
+
+option java_multiple_files = true;
+option java_package = "by.alromos.java.advanced.grpc.pingpong";
+option java_outer_classname = "PingPongProto";
+
+service PingService {
+  rpc Ping (PingRequest) returns (PingResponse);
+}
+
+message PingRequest {
+  string message = 1;
+}
+
+message PingResponse {
+  string message = 1;
+}
