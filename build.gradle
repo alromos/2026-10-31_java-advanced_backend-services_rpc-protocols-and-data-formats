@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'by.alromos'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://packages.confluent.io/maven/' }
+}
+
+dependencies {
+    implementation 'org.apache.kafka:kafka-clients:4.4.0'
+    implementation 'io.confluent:kafka-avro-serializer:8.4.0'
+    // kafka-clients and the Confluent serializers log through the slf4j-api facade only; without a
+    // binding on the classpath slf4j prints a "no providers" warning and discards all log output.
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.20'
+}
+
+def registerKafkaApp = { String taskName, String appMainClass ->
+    tasks.register(taskName, JavaExec) {
+        group = 'application'
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = appMainClass
+        javaLauncher = javaToolchains.launcherFor(java.toolchain)
+        if (project.hasProperty('schema')) {
+            args project.property('schema')
+        }
+    }
+}
+
+registerKafkaApp('runProducer', 'by.alromos.java.advanced.avro.UserProducer')
+registerKafkaApp('runConsumer', 'by.alromos.java.advanced.avro.UserConsumer')
